@@ -38,3 +38,13 @@ function great(name){
   return "hello ,"  + name + "!"
 }
 console.log(great("emmanuel"));
+function great(name){
+
+  return "hello ,"  + name + "!"
+}
+console.log(great("emmanuel"));
+function great(name){
+
+  return "hello ,"  + name + "!"
+}
+console.log(great("emmanuel"));
