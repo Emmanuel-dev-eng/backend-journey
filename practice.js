@@ -33,32 +33,6 @@ function great(name){
   return "hello ,"  + name + "!"
 }
 console.log(great("emmanuel"));
-console.log(add(1,9));
-
-function great(name){
-
-  return "hello ,"  + name + "!"
-}
-console.log(great("emmanuel"));
-
-function great(name){
-
-  return "hello ,"  + name + "!"
-}
-console.log(great("emmanuel"));
-
-function great(name){
-
-  return "hello ,"  + name + "!"
-}
-console.log(great("emmanuel"));
-
-function great(name){
-
-  return "hello ,"  + name + "!"
-}
-console.log(great("emmanuel"));
-
 function great(name){
 
   return "hello ,"  + name + "!"
