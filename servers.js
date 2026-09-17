@@ -16,13 +16,7 @@ app.post('/hello' , (req , res) =>{
   res.send(`welcome MR  ${req.body.name} !`);
 });
 
-app.put('/hello' , (req , res) => {
-  console.log(req.body);
-  res.send(`WELCOME NAME UPDATED TO ${req.body.name}`);
-});
-app.delete('/hello' , (req , res) =>{
-  res.send(`welcome to  ${req.body}`);
-} );
+
 
 app.listen(3000 ,() =>{
   console.log('app running at http://localhost:3000');
