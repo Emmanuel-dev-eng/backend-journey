@@ -1,10 +1,5 @@
-function add(a , b){
-    return  a+b ; 
+function plus(a, z){
+return a+ z;
 }
 
-function subtract(a,b){
-    return  a-b ;
-}
-
-
-module.exports={add , subtract};
+module.exports={plus};

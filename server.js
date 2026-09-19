@@ -1,34 +1,44 @@
-require('dotenv').config();  // 1st — always at the very top, before anything else
+
+require('dotenv').config();
 
 const express = require('express');
-const app = express();
+const mysql = require('mysql2');   // Step 2 — import
 
+const app = express();
 app.use(express.json());
 
+// Step 3 — the connection block goes here
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+});
+
+db.connect((err) => {
+  if (err) {
+    console.log('Database connection failed:', err);
+  } else {
+    console.log('Connected to MySQL database!');
+  }
+});
 
 
-app.get('/', (req, res) => {
+app.get('/' , (req , res)=>{
   res.send('SERVER ACTIVATED');
 });
-
-app.get('/about', (req, res) => {
-  res.send('THIS IS MY BACKEND LEARNING JOURNEY');
+app.post('/hello',(req , res) =>{
+  console.log(req.body)
+  res.send(`successfully registred ${req.body.name}`)
 });
-
-app.post('/hello', (req, res) => {
-  console.log(req.body);
-  res.send(`Hello, ${req.body.name}! You are ${req.body.age} years old.`);
+app.put('/hello' ,(req , res) => {
+  res.send(`successfully updated to ${req.body.name}`);
 });
+app.delete('/hello' , (req , res) =>{
+  res.send('successfully sent message');
+}) ;
 
-app.put('/hello', (req, res) => {
-  console.log(req.body);
-  res.send(`Updated! New name is ${req.body.name}`);
-});
-
-app.delete('/hello', (req, res) => {
-  res.send('Item deleted successfully');
-});
-
-app.listen(3000, () => {
-  console.log('server running on http://localhost:3000');
-});
+app.listen(3000 , () =>{
+  console.log('server redirected http://localhost:3000');
+})
+;
