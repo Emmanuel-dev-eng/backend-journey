@@ -1,7 +1,7 @@
-
 require('dotenv').config();
 
 const express = require('express');
+const { Query } = require('mongoose');
 const mysql = require('mysql2');   // Step 2 — import
 
 const app = express();
@@ -23,22 +23,30 @@ db.connect((err) => {
   }
 });
 
+app.get('/' , (req , res) => {
+  res.send("success");
+}); 
+app.put('/post' , (req , res) => {
+  res.send(`success put ,  ${req.body.age}`);
+}); 
+app.delete('/post' , (req , res) => {
+  res.send(`success put ,  ${req.body.age}`);
+}); 
 
-app.get('/' , (req , res)=>{
-  res.send('SERVER ACTIVATED');
+app.post('/users', (req, res) => {
+  const { name, age } = req.body;
+  const sql = 'INSERT INTO users (name, age) VALUES (?, ?)';
+  db.query(sql, [name, age], (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send('Error saving user');
+    } else {
+      res.send('User saved successfully!');
+    }
+  });
 });
-app.post('/hello',(req , res) =>{
-  console.log(req.body)
-  res.send(`successfully registred ${req.body.name}`)
-});
-app.put('/hello' ,(req , res) => {
-  res.send(`successfully updated to ${req.body.name}`);
-});
-app.delete('/hello' , (req , res) =>{
-  res.send('successfully sent message');
-}) ;
 
-app.listen(3000 , () =>{
-  console.log('server redirected http://localhost:3000');
-})
-;
+
+app.listen(3000 , () => {
+  console.log('app running on http://localhost:3000')
+});

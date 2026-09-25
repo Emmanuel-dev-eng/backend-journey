@@ -1,3 +1,6 @@
-const math=require('./math');
+const math =require('./math');
 
-console.log(math.plus(2,9));
+
+console.log(math.add(4 , 6));
+
+console.log(math.sub(4 , 6));
