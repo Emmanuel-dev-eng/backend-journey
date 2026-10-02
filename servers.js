@@ -47,22 +47,36 @@ app.post('/users', (req, res) => {
   });
 });
 
-app.put('/users/:id' ,(req , res) =>{
-   const { id } = req.params;
-    const { name, age } = req.body;
-   const sql ='UPDATE users SET name = ?, age = ?   WHERE id =?';
-   db.query(sql , [name , age , id] , (err , results) => {
-    if (err){
-      console.log(err);
-      res.status(500).send('failed to update user data');
-    }else{
-      res.send('USER DATA SUCCESSFULLY UPDATED ');
-    }
-   })
-   
-
-});
  
+
+ app.put('/users/:id' , (req , res ) => {
+    const { id } =req.params; 
+    const {name , age } =req.body;
+    const sql='UPDATE users SET name = ? ,  age = ?  WHERE id = ? ';
+    db.query(sql , [name ,  age , id  ] , (err , results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send('FAILED TO UPDATE USER DATA ');
+      }
+      else{
+        res.send('USER DATA SUCCESSFULLY FILLED ')
+      }
+    });
+ }); 
+
+ app.delete('/users/:id' , (req , res ) =>{
+     const { id } = req.params;
+     const sql ='DELETE  FROM users WHERE id = ?';
+     db.query(sql , [ id ] , (err , results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send('FAILED TO DELETE USER DATA')
+      }
+      else{
+         res.send('SUCCESS DELETED USER DATA');
+      }
+     }) ;
+ });
 
 app.listen(3000 , () => {
   console.log('server running on http://localhost:3000')
