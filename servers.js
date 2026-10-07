@@ -1,18 +1,18 @@
 require('dotenv').config();
-const express =require('express');
-const app =express();
-const mysql =require('mysql2');
+const express = require('express');
+const mysql = require('mysql2');
+
+const app = express();
 app.use(express.json());
 
-const db =mysql.createConnection({
+// ---------- DATABASE CONNECTION ----------
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+});
 
-    host:process.env.DB_HOST, 
-    user:process.env.DB_USER,
-    password:process.env.DB_PASSWORD,
-    database:process.env.DB_NAME
-
-}); 
-   
 db.connect((err) => {
   if (err) {
     console.log('Database connection failed:', err);
@@ -21,6 +21,7 @@ db.connect((err) => {
   }
 });
 
+// ---------- USERS ROUTES ----------
 
 app.get('/users', (req, res) => {
   const sql = 'SELECT * FROM users';
@@ -47,37 +48,104 @@ app.post('/users', (req, res) => {
   });
 });
 
- 
+app.put('/users/:id', (req, res) => {
+  const { id } = req.params;
+  const { name, age } = req.body;
+  const sql = 'UPDATE users SET name = ?, age = ? WHERE id = ?';
+  db.query(sql, [name, age, id], (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send('FAILED TO UPDATE USER DATA');
+    } else {
+      res.send('USER DATA SUCCESSFULLY UPDATED');
+    }
+  });
+});
 
- app.put('/users/:id' , (req , res ) => {
-    const { id } =req.params; 
-    const {name , age } =req.body;
-    const sql='UPDATE users SET name = ? ,  age = ?  WHERE id = ? ';
-    db.query(sql , [name ,  age , id  ] , (err , results) => {
-      if (err) {
-        console.log(err);
-        res.status(500).send('FAILED TO UPDATE USER DATA ');
-      }
-      else{
-        res.send('USER DATA SUCCESSFULLY FILLED ')
-      }
-    });
- }); 
+app.delete('/users/:id', (req, res) => {
+  const { id } = req.params;
+  const sql = 'DELETE FROM users WHERE id = ?';
+  db.query(sql, [id], (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send('FAILED TO DELETE USER DATA');
+    } else {
+      res.send('SUCCESS DELETED USER DATA');
+    }
+  });
+});
 
- app.delete('/users/:id' , (req , res ) =>{ 
-     const { id } = req.params;
-     const sql ='DELETE  FROM users WHERE id = ?';
-     db.query(sql , [ id ] , (err , results) => {
-      if (err) {
-        console.log(err);
-        res.status(500).send('FAILED TO DELETE USER DATA')
-      }
-      else{
-         res.send('SUCCESS DELETED USER DATA');
-      }
-     }) ;
- });
+// ---------- TASKS ROUTES ----------
 
-app.listen(3000 , () => {
-  console.log('server running on http://localhost:3000')
+app.post('/tasks', (req, res) => {
+  const { title } = req.body;
+  const sql = 'INSERT INTO tasks (title) VALUES (?)'; // fixed: VALUES, not VALUE
+  db.query(sql, [title], (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send('ERROR CREATING TASK');
+    } else {
+      res.send('TASK SUCCESSFULLY CREATED');
+    }
+  });
+});
+
+app.get('/tasks', (req, res) => {
+  const sql = 'SELECT * FROM tasks';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send('Error fetching tasks');
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.get('/tasks/:id', (req, res) => {
+  const { id } = req.params;
+  const sql = 'SELECT * FROM tasks WHERE id = ?';
+  db.query(sql, [id], (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send('FAILED TO GET TASK');
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.put('/tasks/:id', (req, res) => {
+  const { id } = req.params;
+  const { completed } = req.body;
+  console.log('ID received:', id);
+  console.log('Completed value received:', completed);
+  const sql = 'UPDATE tasks SET completed = ? WHERE id = ?';
+  db.query(sql, [completed, id], (err, results) => {
+    if (err) {
+      console.log('SQL ERROR:', err);
+      res.status(500).send('ERROR UPDATING TASK');
+    } else {
+      console.log('SQL RESULT:', results);
+      res.send('TASK SUCCESSFULLY UPDATED');
+    }
+  });
+});
+
+app.delete('/tasks/:id', (req, res) => {
+  const { id } = req.params;
+  const sql = 'DELETE FROM tasks WHERE id = ?';
+  db.query(sql, [id], (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send('ERROR DELETING TASK');
+    } else {
+      res.send('TASK SUCCESSFULLY DELETED');
+    }
+  });
+});
+
+// ---------- START SERVER ----------
+app.listen(3000, () => {
+  console.log('server running on http://localhost:3000');
 });
