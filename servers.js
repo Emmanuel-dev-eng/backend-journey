@@ -145,6 +145,79 @@ app.delete('/tasks/:id', (req, res) => {
   });
 });
 
+
+
+
+app.get('/notes/:id' , (req , res) =>{
+  const { id } =req.params;
+  db.query('SELECT * FROM notes WHERE id =?' , [ id ] , (err , results) =>{
+     if (err) {
+      console.log(err);
+      res.status(500).send('UNABLE TO GET USER TASK')
+     }else{
+      res.send(results);
+     }
+  } );
+});
+
+app.get('/notes' , (req , res) =>{
+ 
+  db.query('SELECT * FROM notes' ,  (err , results) =>{
+     if (err) {
+      console.log(err);
+      res.status(500).send('UNABLE TO GET USER TASK')
+     }else{
+      res.send(results);
+     }
+  } );
+});
+
+app.post('/notes' , (req , res)=>{
+
+   const { title , content } = req.body; 
+   const sql ='INSERT INTO notes (title , content) VALUES (? ,?)';
+   db.query(sql , [title , content] , (err , results) => {
+      if (err){
+        console.log(err);
+        res.send('FAILED POSTING INTO DATABASE');
+      }else{
+        res.status(500).send('SUCCESSFULLY POSTED DATA')
+      }
+   });
+});
+
+app.put('/notes/:id' , (req , res ) =>{
+  const { id } = req.params;
+  const { title , content } = req.body;
+  db.query('UPDATE notes  SET title = ? , content = ?   WHERE id = ?' , [  title , content , id] , (err , results) =>{
+     if (err){
+      console.log(err);
+      res.status(500).send('FAILED UPDATING SPECIFIC TASK INFO');
+     } else if ( results.affectedRows === 0){
+      res.status(404).send('NOTE NOT FOUND') ;
+     } else{
+         res.send('TASK SUCCESSFULLY UPDATED');
+     }
+  });
+
+});
+
+app.delete('/notes/:id' , (req , res) => {
+  const { id } = req.params;
+  db.query('DELETE FROM notes WHERE id = ? ' , [ id ] , (err , results) =>{
+    if (err){
+      console.log(err);
+      res.status(500).send('FAILED DELETING NOTE DATA')
+    }else if ( results.affectedRows === 0){
+      res.status(404).send('ROW NOT FOUND');
+    }
+    else{
+      res.send('NOTE DATA SUCCESSFULLY DELETED');
+    }
+  });
+});
+
+
 // ---------- START SERVER ----------
 app.listen(3000, () => {
   console.log('server running on http://localhost:3000');
