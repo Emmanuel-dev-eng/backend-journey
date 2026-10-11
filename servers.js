@@ -207,7 +207,7 @@ app.delete('/notes/:id' , (req , res) => {
   db.query('DELETE FROM notes WHERE id = ? ' , [ id ] , (err , results) =>{
     if (err){
       console.log(err);
-      res.status(500).send('FAILED DELETING NOTE DATA')
+      res.status(500).send('FAILED DELETING NOTE DATA'   )
     }else if ( results.affectedRows === 0){
       res.status(404).send('ROW NOT FOUND');
     }
